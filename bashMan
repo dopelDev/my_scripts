@@ -1,0 +1,22 @@
+#!/bin/bash
+# script abrir manuales de bash
+echo "abriendo bash handbook";
+
+if [[ -f projects/manuales/bash-handbook/README.md ]]; then
+  #statements
+  vim projects/manuales/bash-handbook/README.md &
+else
+  #statements
+  echo "bash handbook don't found"
+fi
+
+echo "abiendo bash manual";
+
+if [[ -f Documents/bash.pdf ]]; then
+  #statements
+  evince Documents/bash.pdf;
+else
+  #statements
+  echo "bash.pdf don't found"
+fi
+sleep 1s;

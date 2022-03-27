@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+# nunca olvides el ;
+# test de xorg i3
+# la opcion primary no lo hacer funcionar
+# exec xrandr --output --primary HDMI-0;
+xrandr --auto --output DVI-I-0 --right-of HDMI-0 --auto --output HDMI-0 --right-of DP-2;
+sleep 1s;
+xrandr --auto --output DVI-I-0 --mode 1368x768;
