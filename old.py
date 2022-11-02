@@ -1,4 +1,4 @@
-#!/home/dopel/venv/gvenv/bin/python3.9
+#!/home/dopel/python_environments/general_scripts/bin/python3.10
 
 from os import getcwd, listdir, mkdir, remove
 from os.path import exists, isdir 
