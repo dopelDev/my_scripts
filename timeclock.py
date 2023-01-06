@@ -1,4 +1,4 @@
-#!/usr/bin/python3.10
+#!/usr/bin/python3
 from tkinter import Tk, Label, Button, Frame
 from tkinter import BOTTOM, LEFT, RIGHT, TOP
 from typing import List
