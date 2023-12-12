@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# Constantes del autor
+AUTOR_NOMBRE="dopelDev"
+AUTOR_EMAIL="322kuroneko2@gmail.com"
+AUTOR_GITHUB="https://github.com/dopelDev"
+
+# Imprime la cabecera ASCII
+imprimir_cabecera() {
+  cat << "EOF"
+       __                 ______
+  ____/ /___  ____  ___  / / __ \___ _   __
+ / __  / __ \/ __ \/ _ \/ / / / / _ \ | / /
+/ /_/ / /_/ / /_/ /  __/ / /_/ /  __/ |/ /
+\__,_/\____/ .___/\___/_/_____/\___/|___/
+          /_/
+EOF
+}
+
+# Imprime información del autor
+imprimir_info_autor() {
+  echo "Nombre del autor: $AUTOR_NOMBRE"
+  echo "Email del autor: $AUTOR_EMAIL"
+  echo "Github del autor: $AUTOR_GITHUB"
+}
+
+# Imprime la fecha actual en formato: mes, día de la semana, día en letras y año
+imprimir_fecha() {
+  # Arreglo con los nombres de los días
+  dias=(cero uno dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince dieciséis diecisiete dieciocho diecinueve veinte veintiuno veintidós veintitrés veinticuatro veinticinco veintiséis veintisiete veintiocho veintinueve treinta treinta y uno)
+
+	# Obtiene el número del día actual y su nombre correspondiente
+  dia=$(date +%d)
+  enletras=${dias[$dia]}
+
+  # Obtiene el nombre del mes actual
+  mes=$(date +%B)
+
+  # Obtiene el número de día de la semana actual
+  diasemana=$(date +%A)
+
+# Obtiene el año actual
+  anio=$(date +%Y)
+
+  # Convierte el año a palabras en español
+case $anio in
+  2022) anio="dos_mil_veintidos";;
+  2023) anio="dos_mil_veintitres";;
+  2024) anio="dos_mil_veinticuatro";;
+  2025) anio="dos_mil_veinticinco";;
+  2026) anio="dos_mil_veintiséis";;
+  2027) anio="dos_mil_veintisiete";;
+  2028) anio="dos_mil_veintiocho";;
+  2029) anio="dos_mil_veintinueve";;
+  2030) anio="dos_mil_treinta";;
+  2031) anio="dos_mil_treinta_y_uno";;
+  2032) anio="dos_mil_treinta_y_dos";;
+  2033) anio="dos_mil_treinta_y_tres";;
+  2034) anio="dos_mil_treinta_y_cuatro";;
+  2035) anio="dos_mil_treinta_y_cinco";;
+  2036) anio="dos_mil_treinta_y_seis";;
+  2037) anio="dos_mil_treinta_y_siete";;
+  2038) anio="dos_mil_treinta_y_ocho";;
+  2039) anio="dos_mil_treinta_y_nueve";;
+  2040) anio="dos_mil_cuarenta";;
+  2041) anio="dos_mil_cuarenta_y_uno";;
+  2042) anio="dos_mil_cuarenta_y_dos";;
+  2043) anio="dos_mil_cuarenta_y_tres";;
+  2044) anio="dos_mil_cuarenta_y_cuatro";;
+  2045) anio="dos_mil_cuarenta_y_cinco";;
+  2046) anio="dos_mil_cuarenta_y_seis";;
+  2047) anio="dos_mil_cuarenta_y_siete";;
+  2048) anio="dos_mil_cuarenta_y_ocho";;
+  2049) anio="dos_mil_cuarenta_y_nueve";;
+  2050) anio="dos_mil_cincuenta";;
+  # Agregar más años aquí...
+  *) echo "Año desconocido"; exit;;
+esac
+  echo "$diasemana"_"$enletras"_de_"$mes"_del_"$anio"
+}
+
+# Verifica si se pidió imprimir información del autor
+if [[ $1 = '-info' ]]; then
+  imprimir_cabecera
+  imprimir_info_autor
+elif [[ $1 = '-dir' ]]; then
+  # Imprime la cabecera ASCII
+  imprimir_fecha
+else
+	imprimir_cabecera
+	imprimir_fecha
+fi
