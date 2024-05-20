@@ -10,7 +10,7 @@ echo """Choose a VPN connection:
 0) Exit
 """
 
-pathToPE="$HOME/vpn/hoyito/openvpn-gnu-linux/"
+pathToPE="$HOME/vpn/elastika/openvpn-gnu-linux/"
 pathToUS="$HOME/vpn/personal_vpn/openvpn-gnu-linux/"
 pathToJP="$HOME/vpn/japon-vpn/desktop/openvpn-gnu-linux/"
 
