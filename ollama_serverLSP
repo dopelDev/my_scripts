@@ -1,0 +1,117 @@
+#!/usr/bin/python3
+"""
+ollama_serverLSP.py
+
+Este script interactúa con una API de servidor de Ollama para generar respuestas utilizando modelos de lenguaje. 
+Además, opcionalmente utiliza `espeak` para convertir el texto de respuesta en voz. 
+
+Parámetros:
+    - nombre_modelo: El nombre del modelo de IA a utilizar.
+    - prompt: El texto de entrada o prompt para el modelo de IA.
+    - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak` para convertir la respuesta en voz.
+
+Uso:
+    python ollama_serverLSP.py <nombre_modelo> <prompt> [--no-espeak]
+"""
+
+import requests
+import subprocess
+import logging
+import json
+from sys import argv
+
+# Configuración de logging
+logging.basicConfig(
+    filename='llamaCooler.log',  # Archivo de logs
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+
+# Configuración del servidor
+SERVER_ADDRESS = "192.168.18.58"
+API_ENDPOINT = f"http://{SERVER_ADDRESS}:11434/api/generate"
+
+def call_to_llama(model, prompt, use_espeak):
+    """
+    Envía una solicitud a la API de Ollama y procesa la respuesta.
+
+    Args:
+        model (str): El nombre del modelo a utilizar.
+        prompt (str): El texto de entrada para el modelo.
+        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir texto a voz.
+
+    Returns:
+        str: La respuesta generada por el modelo.
+        None: Si ocurre un error o la respuesta está vacía.
+    """
+    payload = {"model": model, "prompt": prompt}
+    logging.info(f"Enviando solicitud a {API_ENDPOINT} con payload: {payload}")
+
+    try:
+        # Ejecutar la solicitud POST con streaming
+        response = requests.post(API_ENDPOINT, json=payload, stream=True)
+        response.raise_for_status()  # Verifica errores HTTP
+
+        texto_respuesta = ""
+        for line in response.iter_lines():
+            if line:
+                fragmento_json = json.loads(line.decode('utf-8'))
+                if fragmento_json.get('response'):
+                    texto_respuesta += fragmento_json['response']
+                if fragmento_json.get('done', False):
+                    break
+
+        if not texto_respuesta.strip():
+            logging.warning("La respuesta final de la IA está vacía.")
+            print("La respuesta final de la IA está vacía.")
+            return None
+        
+        logging.info(f"Respuesta en texto plano:\n{texto_respuesta}")
+        print(f"Respuesta de la IA:\n{texto_respuesta}")
+
+        # Usar espeak si está habilitado
+        if use_espeak:
+            espeak_text(texto_respuesta)
+
+        return texto_respuesta
+
+    except Exception as e:
+        logging.error(f"Error al realizar la solicitud: {e}")
+        print(f"Error al realizar la solicitud: {e}")
+        return None
+
+def espeak_text(text):
+    """
+    Utiliza espeak para convertir texto a voz en español.
+
+    Args:
+        text (str): El texto que se convertirá a voz.
+    """
+    try:
+        subprocess.run(['espeak', '-v', 'es-la', '-s 160', text], check=True)
+    except Exception as e:
+        logging.error(f"Error al usar espeak: {e}")
+        print(f"Error al usar espeak: {e}")
+
+def main():
+    """
+    Función principal que ejecuta el flujo de trabajo completo.
+    """
+    if len(argv) < 3:
+        print("Uso: python script.py <nombre_modelo> <prompt> [--no-espeak]")
+        logging.error("Faltan argumentos. Uso: python script.py <nombre_modelo> <prompt> [--no-espeak]")
+        return
+
+    model = argv[1]
+    prompt = argv[2]
+    use_espeak = True
+
+    # Verificar si se pasa el argumento opcional --no-espeak
+    if len(argv) > 3 and argv[3] == "--no-espeak":
+        use_espeak = False
+
+    call_to_llama(model=model, prompt=prompt, use_espeak=use_espeak)
+
+if __name__ == "__main__":
+    main()
+
