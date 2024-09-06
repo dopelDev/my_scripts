@@ -1,5 +1,0 @@
-2024-08-26 08:32:45,110 - INFO - Enviando solicitud a http://192.168.18.58:11434/api/generate con payload: {'model': 'llama3.1', 'prompt': 'hola'}
-2024-08-26 08:32:45,111 - DEBUG - Starting new HTTP connection (1): 192.168.18.58:11434
-2024-08-26 08:32:52,005 - DEBUG - http://192.168.18.58:11434 "POST /api/generate HTTP/1.1" 200 None
-2024-08-26 08:32:54,609 - INFO - Respuesta en texto plano:
-Hola! ¿En qué puedo ayudarte hoy?

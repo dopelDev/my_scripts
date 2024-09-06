@@ -28,7 +28,7 @@ logging.basicConfig(
 )
 
 # Configuración del servidor
-SERVER_ADDRESS = "192.168.18.58"
+SERVER_ADDRESS = "127.0.0.1"
 API_ENDPOINT = f"http://{SERVER_ADDRESS}:11434/api/generate"
 
 def call_to_llama(model, prompt, use_espeak):
