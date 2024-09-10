@@ -10,7 +10,7 @@ para convertir el texto de respuesta en voz.
 Parámetros:
     - nombre_modelo: El nombre del modelo de IA a utilizar.
     - prompt: El texto de entrada o prompt para el modelo de IA.
-    - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak` \
+    - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak`
             para convertir la respuesta en voz.
 
 Uso:
@@ -43,7 +43,7 @@ def call_to_llama(model, prompt, use_espeak):
     Args:
         model (str): El nombre del modelo a utilizar.
         prompt (str): El texto de entrada para el modelo.
-        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir \
+        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir
                 texto a voz.
 
     Returns:
