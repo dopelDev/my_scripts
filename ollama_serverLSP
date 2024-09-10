@@ -2,13 +2,16 @@
 """
 ollama_serverLSP.py
 
-Este script interactúa con una API de servidor de Ollama para generar respuestas utilizando modelos de lenguaje. 
-Además, opcionalmente utiliza `espeak` para convertir el texto de respuesta en voz. 
+Este script interactúa con una API de servidor de Ollama para generar
+respuestas utilizando modelos de lenguaje.
+Además, opcionalmente utiliza `espeak`
+para convertir el texto de respuesta en voz.
 
 Parámetros:
     - nombre_modelo: El nombre del modelo de IA a utilizar.
     - prompt: El texto de entrada o prompt para el modelo de IA.
-    - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak` para convertir la respuesta en voz.
+    - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak` \
+            para convertir la respuesta en voz.
 
 Uso:
     python ollama_serverLSP.py <nombre_modelo> <prompt> [--no-espeak]
@@ -28,8 +31,10 @@ logging.basicConfig(
 )
 
 # Configuración del servidor
-SERVER_ADDRESS = "127.0.0.1"
+# SERVER_ADDRESS = "127.0.0.1"
+SERVER_ADDRESS = "192.168.18.58"
 API_ENDPOINT = f"http://{SERVER_ADDRESS}:11434/api/generate"
+
 
 def call_to_llama(model, prompt, use_espeak):
     """
@@ -38,7 +43,8 @@ def call_to_llama(model, prompt, use_espeak):
     Args:
         model (str): El nombre del modelo a utilizar.
         prompt (str): El texto de entrada para el modelo.
-        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir texto a voz.
+        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir \
+                texto a voz.
 
     Returns:
         str: La respuesta generada por el modelo.
@@ -65,7 +71,6 @@ def call_to_llama(model, prompt, use_espeak):
             logging.warning("La respuesta final de la IA está vacía.")
             print("La respuesta final de la IA está vacía.")
             return None
-        
         logging.info(f"Respuesta en texto plano:\n{texto_respuesta}")
         print(f"Respuesta de la IA:\n{texto_respuesta}")
 
@@ -80,6 +85,7 @@ def call_to_llama(model, prompt, use_espeak):
         print(f"Error al realizar la solicitud: {e}")
         return None
 
+
 def espeak_text(text):
     """
     Utiliza espeak para convertir texto a voz en español.
@@ -93,13 +99,17 @@ def espeak_text(text):
         logging.error(f"Error al usar espeak: {e}")
         print(f"Error al usar espeak: {e}")
 
+
 def main():
     """
     Función principal que ejecuta el flujo de trabajo completo.
     """
     if len(argv) < 3:
         print("Uso: python script.py <nombre_modelo> <prompt> [--no-espeak]")
-        logging.error("Faltan argumentos. Uso: python script.py <nombre_modelo> <prompt> [--no-espeak]")
+        logging.error(
+            "Faltan argumentos. Uso: python script.py "
+            "<nombre_modelo> <prompt> [--no-espeak]"
+        )
         return
 
     model = argv[1]
@@ -112,6 +122,6 @@ def main():
 
     call_to_llama(model=model, prompt=prompt, use_espeak=use_espeak)
 
+
 if __name__ == "__main__":
     main()
-
