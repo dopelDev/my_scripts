@@ -2,3 +2,4 @@
 env/**
 # log de ollama server using espeak
 llamaCooler.log
+ollama.env

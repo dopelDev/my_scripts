@@ -22,7 +22,16 @@ import subprocess
 import logging
 import json
 from sys import argv
+from dotenv import load_dotenv
+import os
 
+# Load vars Environment
+'''
+El script espera los parametros de entorno
+    -- SERVER_ADDRESS
+    -- MODEL_NAME
+'''
+load_dotenv('ollama.env')
 # Configuración de logging
 logging.basicConfig(
     filename='llamaCooler.log',  # Archivo de logs
@@ -32,8 +41,15 @@ logging.basicConfig(
 
 # Configuración del servidor
 # SERVER_ADDRESS = "127.0.0.1"
-SERVER_ADDRESS = "192.168.18.58"
+SERVER_ADDRESS = os.getenv("SERVER_ADDRESS")
 API_ENDPOINT = f"http://{SERVER_ADDRESS}:11434/api/generate"
+
+'''
+TODO:
+    Tengo que modificar el call_to_llama para usar
+    el parametro de entorno y no esperarlo como un parametro
+    de method
+'''
 
 
 def call_to_llama(model, prompt, use_espeak):
