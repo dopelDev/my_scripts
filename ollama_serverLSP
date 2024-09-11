@@ -8,13 +8,18 @@ Además, opcionalmente utiliza `espeak`
 para convertir el texto de respuesta en voz.
 
 Parámetros:
-    - nombre_modelo: El nombre del modelo de IA a utilizar.
     - prompt: El texto de entrada o prompt para el modelo de IA.
     - --no-espeak (opcional): Si se incluye, desactiva el uso de `espeak`
             para convertir la respuesta en voz.
+    - --file <ruta_del_archivo>: Carga el prompt desde un archivo de texto.
 
 Uso:
-    python ollama_serverLSP.py <nombre_modelo> <prompt> [--no-espeak]
+    python ollama_serverLSP.py <prompt> [--no-espeak] [--file <ruta_del_archivo>]
+
+    El script espera los parámetros de entorno
+    -- SERVER_ADDRESS
+    -- MODEL_NAME
+
 """
 
 import requests
@@ -25,13 +30,6 @@ from sys import argv
 from dotenv import load_dotenv
 import os
 
-# Load vars Environment
-'''
-El script espera los parametros de entorno
-    -- SERVER_ADDRESS
-    -- MODEL_NAME
-'''
-load_dotenv('ollama.env')
 # Configuración de logging
 logging.basicConfig(
     filename='llamaCooler.log',  # Archivo de logs
@@ -39,34 +37,28 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
+# Load Environment vars
+load_dotenv('ollama.env')
 # Configuración del servidor
-# SERVER_ADDRESS = "127.0.0.1"
 SERVER_ADDRESS = os.getenv("SERVER_ADDRESS")
 API_ENDPOINT = f"http://{SERVER_ADDRESS}:11434/api/generate"
-
-'''
-TODO:
-    Tengo que modificar el call_to_llama para usar
-    el parametro de entorno y no esperarlo como un parametro
-    de method
-'''
+# MODEL Name
+MODEL_NAME = os.getenv("MODEL_NAME")
 
 
-def call_to_llama(model, prompt, use_espeak):
+def call_to_llama(prompt, use_espeak):
     """
     Envía una solicitud a la API de Ollama y procesa la respuesta.
 
     Args:
-        model (str): El nombre del modelo a utilizar.
         prompt (str): El texto de entrada para el modelo.
-        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir
-                texto a voz.
+        use_espeak (bool): Indica si se debe utilizar `espeak` para convertir texto a voz.
 
     Returns:
         str: La respuesta generada por el modelo.
         None: Si ocurre un error o la respuesta está vacía.
     """
-    payload = {"model": model, "prompt": prompt}
+    payload = {"model": MODEL_NAME, "prompt": prompt}
     logging.info(f"Enviando solicitud a {API_ENDPOINT} con payload: {payload}")
 
     try:
@@ -116,28 +108,72 @@ def espeak_text(text):
         print(f"Error al usar espeak: {e}")
 
 
+def read_prompt_from_file(filepath):
+    """
+    Lee el contenido de un archivo, lo envuelve en un bloque de código (``` ```),
+    y lo utiliza como prompt.
+
+    Args:
+        filepath (str): La ruta del archivo a leer.
+
+    Returns:
+        str: El contenido del archivo envuelto en un bloque de código.
+        None: Si ocurre un error al leer el archivo.
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:
+            content = file.read().strip()
+
+        # Envolver el contenido del archivo en un bloque de código
+        formatted_prompt = f"```\\n{content}\\n```"
+        return formatted_prompt
+
+    except Exception as e:
+        logging.error(f"Error al leer el archivo {filepath}: {e}")
+        print(f"Error al leer el archivo {filepath}: {e}")
+        return None
+
+
 def main():
     """
     Función principal que ejecuta el flujo de trabajo completo.
     """
-    if len(argv) < 3:
-        print("Uso: python script.py <nombre_modelo> <prompt> [--no-espeak]")
+    if len(argv) < 2:
+        print("Uso: python script.py <prompt> [--no-espeak] [--file <ruta_del_archivo>]")
         logging.error(
-            "Faltan argumentos. Uso: python script.py "
-            "<nombre_modelo> <prompt> [--no-espeak]"
+            "Faltan argumentos. Uso: python script.py <prompt> [--no-espeak] [--file <ruta_del_archivo>]"
         )
         return
 
-    model = argv[1]
-    prompt = argv[2]
+    # Verificar si se pasa el argumento --file para cargar el prompt desde un archivo
+    file_content = ""
+    if '--file' in argv:
+        file_index = argv.index('--file') + 1
+        if file_index < len(argv):
+            filepath = argv[file_index]
+            file_content = read_prompt_from_file(filepath)
+            if file_content is None:
+                return
+        else:
+            print("Por favor, proporciona la ruta de un archivo después de '--file'.")
+            return
+
+    # Tomar el prompt de la línea de comandos o usarlo como texto adicional
+    prompt = argv[1] if len(argv) > 1 else ""
+
+    # Si hay contenido en el archivo, concatenarlo al prompt
+    if file_content:
+        prompt = f"{prompt}\n{file_content}"
+
     use_espeak = True
 
     # Verificar si se pasa el argumento opcional --no-espeak
-    if len(argv) > 3 and argv[3] == "--no-espeak":
+    if '--no-espeak' in argv:
         use_espeak = False
 
-    call_to_llama(model=model, prompt=prompt, use_espeak=use_espeak)
+    call_to_llama(prompt=prompt, use_espeak=use_espeak)
 
 
 if __name__ == "__main__":
     main()
+
