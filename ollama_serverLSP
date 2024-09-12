@@ -14,7 +14,10 @@ Parámetros:
     - --file <ruta_del_archivo>: Carga el prompt desde un archivo de texto.
 
 Uso:
-    python ollama_serverLSP.py <prompt> [--no-espeak] [--file <ruta_del_archivo>]
+    python ollama_serverLSP.py
+    <prompt>
+    [--no-espeak]
+    [--file <ruta_del_archivo>]
 
     El script espera los parámetros de entorno
     -- SERVER_ADDRESS
